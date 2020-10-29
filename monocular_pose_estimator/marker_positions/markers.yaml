@@ -1,0 +1,15 @@
+# The marker positions in the trackable's frame of reference:
+#
+marker_positions:
+  - x: 0.0
+    y: 0.0
+    z: 0.0
+  - x: 0.0265
+    y: 0.029
+    z: 0.0
+  - x: 0.028
+    y: 0.0765
+    z: 0.0
+  - x: 0.055
+    y: 0.053
+    z: 0.0
