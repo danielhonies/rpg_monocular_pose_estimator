@@ -27,7 +27,7 @@
  */
 
 #include "monocular_pose_estimator_lib/led_detector.h"
-
+#include "ros/ros.h"
 namespace monocular_pose_estimator
 {
 
@@ -60,7 +60,6 @@ void LEDDetector::findLeds(const cv::Mat &image, cv::Rect ROI, const int &thresh
 
   // Vector for containing the detected points that will be undistorted later
   std::vector<cv::Point2f> distorted_points;
-
   // Identify the blobs in the image
   for (unsigned i = 0; i < contours.size(); i++)
   {
@@ -99,7 +98,7 @@ void LEDDetector::findLeds(const cv::Mat &image, cv::Rect ROI, const int &thresh
 
     // Resize the vector to hold all the possible LED points
     pixel_positions.resize(numPoints);
-
+    ROS_WARN("number of detected points: %u", numPoints);
     // Populate the output vector of points
     for (unsigned j = 0; j < numPoints; ++j)
     {

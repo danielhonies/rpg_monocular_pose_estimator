@@ -159,6 +159,8 @@ void MPENode::imageCallback(const sensor_msgs::Image::ConstPtr& image_msg)
   const bool found_body_pose = trackable_object_.estimateBodyPose(image, time_to_predict);
   if (found_body_pose) // Only output the pose, if the pose was updated (i.e. a valid pose was found).
   {
+    static tf2_ros::TransformBroadcaster br;
+    geometry_msgs::TransformStamped trans;
     //Eigen::Matrix4d transform = trackable_object.getPredictedPose();
     Matrix6d cov = trackable_object_.getPoseCovariance();
     Eigen::Matrix4d transform = trackable_object_.getPredictedPose();
@@ -168,6 +170,7 @@ void MPENode::imageCallback(const sensor_msgs::Image::ConstPtr& image_msg)
 
     // Convert transform to PoseWithCovarianceStamped message
     predicted_pose_.header.stamp = image_msg->header.stamp;
+    predicted_pose_.header.frame_id = "raspicam";
     predicted_pose_.pose.pose.position.x = transform(0, 3);
     predicted_pose_.pose.pose.position.y = transform(1, 3);
     predicted_pose_.pose.pose.position.z = transform(2, 3);
@@ -176,6 +179,36 @@ void MPENode::imageCallback(const sensor_msgs::Image::ConstPtr& image_msg)
     predicted_pose_.pose.pose.orientation.y = orientation.y();
     predicted_pose_.pose.pose.orientation.z = orientation.z();
     predicted_pose_.pose.pose.orientation.w = orientation.w();
+
+    //orientation.setRotation([0,1,0],-orientation.y());
+    tf::Quaternion q1(
+    predicted_pose_.pose.pose.orientation.x,
+    predicted_pose_.pose.pose.orientation.y,
+    predicted_pose_.pose.pose.orientation.z,
+    predicted_pose_.pose.pose.orientation.w);
+    tf::Matrix3x3 m(q1);
+    double roll, pitch, yaw;
+    m.getRPY(roll, pitch, yaw);
+
+    ROS_WARN("%f, %f, %f",roll,pitch,yaw);
+    
+    if (abs(pitch < 50) && abs(roll) < 50){
+      tf2::Quaternion q;
+      q.setRPY(0, 3.14,yaw);
+      
+      trans.header = predicted_pose_.header;
+      trans.child_frame_id = "crazy";
+      trans.transform.translation.x = transform(0, 3);
+      trans.transform.translation.y = transform(1, 3);
+      trans.transform.translation.z = transform(2, 3) * 1.5; 
+    
+      trans.transform.rotation.x = q.x();
+      trans.transform.rotation.y = q.y();
+      trans.transform.rotation.z = q.z();
+      trans.transform.rotation.w = q.w();
+      br.sendTransform(trans);
+    }
+    
 
     // Add covariance to PoseWithCovarianceStamped message
     for (unsigned i = 0; i < 6; ++i)

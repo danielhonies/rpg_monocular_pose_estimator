@@ -29,7 +29,8 @@
 #define MONOCULAR_POSE_ESTIMATOR_NODE_H_
 
 #include "ros/ros.h"
-
+#include <tf2_ros/transform_broadcaster.h>
+#include <geometry_msgs/TransformStamped.h>
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/CameraInfo.h>
 #include <sensor_msgs/image_encodings.h>
@@ -48,6 +49,9 @@
 #include <monocular_pose_estimator/MonocularPoseEstimatorConfig.h>
 
 #include "monocular_pose_estimator_lib/pose_estimator.h"
+#include <tf2/LinearMath/Quaternion.h>
+#include <tf/transform_datatypes.h>
+#include <cmath>
 
 namespace monocular_pose_estimator
 {
