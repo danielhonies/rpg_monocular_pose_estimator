@@ -202,10 +202,10 @@ void MPENode::imageCallback(const sensor_msgs::Image::ConstPtr& image_msg)
       trans.transform.translation.y = transform(1, 3);
       trans.transform.translation.z = transform(2, 3) * 1.5; 
     
-      trans.transform.rotation.x = q.x();
-      trans.transform.rotation.y = q.y();
-      trans.transform.rotation.z = q.z();
-      trans.transform.rotation.w = q.w();
+      trans.transform.rotation.x = orientation.x();
+      trans.transform.rotation.y = orientation.y();
+      trans.transform.rotation.z = orientation.z();
+      trans.transform.rotation.w = orientation.w();
       br.sendTransform(trans);
     }
     
