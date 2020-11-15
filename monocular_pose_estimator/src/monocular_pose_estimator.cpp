@@ -173,7 +173,7 @@ void MPENode::imageCallback(const sensor_msgs::Image::ConstPtr& image_msg)
     predicted_pose_.header.frame_id = "raspicam";
     predicted_pose_.pose.pose.position.x = transform(0, 3);
     predicted_pose_.pose.pose.position.y = transform(1, 3);
-    predicted_pose_.pose.pose.position.z = transform(2, 3);
+    predicted_pose_.pose.pose.position.z = 1 - transform(2, 3)*1.5; 
     Eigen::Quaterniond orientation = Eigen::Quaterniond(transform.block<3, 3>(0, 0));
     predicted_pose_.pose.pose.orientation.x = orientation.x();
     predicted_pose_.pose.pose.orientation.y = orientation.y();
